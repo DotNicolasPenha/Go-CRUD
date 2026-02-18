@@ -11,6 +11,14 @@ type Repository struct {
 	Conn *pgxpool.Pool
 }
 
+func NewRepository(conn *pgxpool.Pool) *Repository {
+	if conn == nil {
+		panic("connection of post repository is nil")
+	}
+	return &Repository{
+		Conn: conn,
+	}
+}
 func (r *Repository) Insert(post Post) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

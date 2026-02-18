@@ -8,7 +8,7 @@ type Service struct {
 
 func NewService(r *Repository) *Service {
 	if r == nil {
-		panic("repository is nil")
+		panic("repository of post service is nil")
 	}
 	return &Service{repository: *r}
 }

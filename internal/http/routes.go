@@ -23,7 +23,7 @@ func SetupRoutes(g *gin.Engine, service *post.Service) {
 			return
 		}
 		ctx.JSON(201, gin.H{
-			"msg": "user created",
+			"msg": "post created",
 			"ok":  true,
 		})
 	})

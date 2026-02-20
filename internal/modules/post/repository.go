@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/DotNicolasPenha/Posts-CRUD/internal/common/logger"
+	uuid "github.com/jackc/pgtype/ext/gofrs-uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -31,4 +32,35 @@ func (r *Repository) Insert(post CreatePostDTO) error {
 		post.Body,
 	)
 	return err
+}
+func (r *Repository) FindMany() ([]Post, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	var posts []Post
+	rows, err := r.Conn.Query(ctx, "SELECT id,nameuser,body,created_at FROM posts")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id uuid.UUID
+		var nameuser string
+		var body string
+		var createdAt time.Time
+
+		if err := rows.Scan(&id, &nameuser, &body, &createdAt); err != nil {
+			return nil, err
+		}
+
+		post := Post{
+			ID:        id,
+			Username:  nameuser,
+			Body:      body,
+			CreatedAt: createdAt,
+		}
+
+		posts = append(posts, post)
+	}
+	return posts, nil
 }

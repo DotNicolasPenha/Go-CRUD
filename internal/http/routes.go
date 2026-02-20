@@ -64,4 +64,19 @@ func SetupRoutes(g *gin.Engine, service *post.Service) {
 			"ok":   true,
 		})
 	})
+	g.DELETE("/posts/:id", func(ctx *gin.Context) {
+		id := ctx.Param("id")
+		err := service.RemoveOne(id)
+		if err != nil {
+			ctx.JSON(400, gin.H{
+				"error": err.Error(),
+				"ok":    false,
+			})
+			return
+		}
+		ctx.JSON(200, gin.H{
+			"post_deleted": id,
+			"ok":           true,
+		})
+	})
 }

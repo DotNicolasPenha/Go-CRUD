@@ -2,6 +2,7 @@ package post
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/DotNicolasPenha/Posts-CRUD/internal/common/logger"
@@ -75,4 +76,14 @@ func (r *Repository) FindOne(id string) (*Post, error) {
 		return nil, err
 	}
 	return &post, nil
+}
+func (r *Repository) DeleteOne(id string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	result, err := r.Conn.Exec(ctx, "DELETE FROM posts WHERE ID=$1", id)
+	if result.RowsAffected() == 0 {
+		return errors.New("post not found to delete")
+	}
+	return err
 }

@@ -27,4 +27,18 @@ func SetupRoutes(g *gin.Engine, service *post.Service) {
 			"ok":  true,
 		})
 	})
+	g.GET("/posts", func(ctx *gin.Context) {
+		posts, err := service.GetPosts()
+		if err != nil {
+			ctx.JSON(500, gin.H{
+				"error": err,
+				"ok":    false,
+			})
+			return
+		}
+		ctx.JSON(200, gin.H{
+			"posts": posts,
+			"ok":    true,
+		})
+	})
 }

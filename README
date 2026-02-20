@@ -12,7 +12,12 @@ Linguagem:
 Tecnologias: 
  Docker,Postgres,Gin-Gonic
 
-Status: 
+Status 01: 
  Este projeto ainda está em desenvolvimento, até agora há o módulo post que tem repository
  com um método de Insert e um service com um método de AddPost, além da conexão do banco 
  de dados postgresql e o docker file.
+
+Status 02:
+ Agora neste projeto há uma função SetupTables que serve para inicializar
+ as tables, além de agora eu estar utilizando ENVs e também criei duas rotas
+ para adicionar e listar os posts.

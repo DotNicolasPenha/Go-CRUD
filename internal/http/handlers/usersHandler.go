@@ -29,4 +29,18 @@ func UsersHandler(g *gin.Engine, serviceUser *user.Service) {
 			"ok":  true,
 		})
 	})
+	g.GET("/users", func(ctx *gin.Context) {
+		users, err := serviceUser.GetUsers()
+		if err != nil {
+			ctx.JSON(500, gin.H{
+				"error": err.Error(),
+				"ok":    false,
+			})
+			return
+		}
+		ctx.JSON(200, gin.H{
+			"users": users,
+			"ok":    true,
+		})
+	})
 }

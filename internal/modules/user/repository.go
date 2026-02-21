@@ -30,3 +30,21 @@ func (r *Repository) Insert(createUserDto CreateUserDTO) error {
 	)
 	return err
 }
+
+func (r *Repository) FindMany() ([]User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	rows, err := r.conn.Query(ctx, "SELECT * FROM users")
+	if err != nil {
+		return nil, err
+	}
+	var Users []User
+	for rows.Next() {
+		var User User
+		if err := rows.Scan(&User.ID, &User.Username, &User.Bio, &User.CreatedAt); err != nil {
+			return nil, err
+		}
+		Users = append(Users, User)
+	}
+	return Users, nil
+}

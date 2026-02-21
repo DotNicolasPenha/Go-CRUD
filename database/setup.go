@@ -36,7 +36,7 @@ func setupTableUser(conn *pgxpool.Pool, ctx context.Context) error {
 	query := ` 
 	CREATE TABLE IF NOT EXISTS users (
 	  ID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-		nameuser TEXT NOT NULL,
+		nameuser TEXT NOT NULL UNIQUE,
 		bio TEXT NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	)

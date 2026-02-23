@@ -1,8 +1,6 @@
 package post
 
 import (
-	"errors"
-
 	"github.com/DotNicolasPenha/Posts-CRUD/internal/common/logger"
 )
 
@@ -18,10 +16,10 @@ func NewService(r *Repository) *Service {
 }
 func (s *Service) AddPost(post CreatePostDTO) error {
 	if post.AuthorID.UUID.IsNil() {
-		return errors.New("the author_id of post is empty")
+		return ErrAuthorIdIsNil
 	}
 	if post.Body == "" {
-		return errors.New("the body of post is empty")
+		return ErrBodyIsNil
 	}
 	if err := s.repository.Insert(post); err != nil {
 		return err
@@ -34,7 +32,7 @@ func (s *Service) GetPosts() ([]Post, error) {
 }
 func (s *Service) GetOnePost(id string) (*Post, error) {
 	if id == "" {
-		return nil, errors.New("id param not found")
+		return nil, ErrIdParamIsNil
 	}
 	post, err := s.repository.FindOne(id)
 	if err != nil {
@@ -45,7 +43,7 @@ func (s *Service) GetOnePost(id string) (*Post, error) {
 
 func (s *Service) RemoveOne(id string) error {
 	if id == "" {
-		return errors.New("id param not found")
+		return ErrIdParamIsNil
 	}
 	return s.repository.DeleteOne(id)
 }

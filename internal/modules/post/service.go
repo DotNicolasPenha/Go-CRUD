@@ -17,8 +17,8 @@ func NewService(r *Repository) *Service {
 	return &Service{repository: *r}
 }
 func (s *Service) AddPost(post CreatePostDTO) error {
-	if post.Username == "" {
-		return errors.New("the username of post is empty")
+	if post.AuthorID.UUID.IsNil() {
+		return errors.New("the author_id of post is empty")
 	}
 	if post.Body == "" {
 		return errors.New("the body of post is empty")

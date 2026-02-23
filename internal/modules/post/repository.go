@@ -28,8 +28,8 @@ func (r *Repository) Insert(post CreatePostDTO) error {
 
 	_, err := r.Conn.Exec(
 		ctx,
-		"INSERT INTO posts (username,body) VALUES ($1,$2)",
-		post.Username,
+		"INSERT INTO posts (author_id,body) VALUES ($1,$2)",
+		post.AuthorID,
 		post.Body,
 	)
 	return err
@@ -38,7 +38,7 @@ func (r *Repository) FindMany() ([]Post, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	var posts []Post
-	rows, err := r.Conn.Query(ctx, "SELECT ID,username,body,created_at FROM posts")
+	rows, err := r.Conn.Query(ctx, "SELECT ID,author_id,body,created_at FROM posts")
 	if err != nil {
 		return nil, err
 	}
@@ -46,17 +46,17 @@ func (r *Repository) FindMany() ([]Post, error) {
 
 	for rows.Next() {
 		var id uuid.UUID
-		var nameuser string
+		var author_id uuid.UUID
 		var body string
 		var createdAt time.Time
 
-		if err := rows.Scan(&id, &nameuser, &body, &createdAt); err != nil {
+		if err := rows.Scan(&id, &author_id, &body, &createdAt); err != nil {
 			return nil, err
 		}
 
 		post := Post{
 			ID:        id,
-			Username:  nameuser,
+			AuthorID:  author_id,
 			Body:      body,
 			CreatedAt: createdAt,
 		}
@@ -70,8 +70,8 @@ func (r *Repository) FindOne(id string) (*Post, error) {
 	defer cancel()
 	var post Post
 	err := r.Conn.QueryRow(
-		ctx, "SELECT ID,username,body,created_at FROM posts WHERE id=$1", id,
-	).Scan(&post.ID, &post.Username, &post.Body, &post.CreatedAt)
+		ctx, "SELECT ID,author_id,body,created_at FROM posts WHERE id=$1", id,
+	).Scan(&post.ID, &post.AuthorID, &post.Body, &post.CreatedAt)
 	if err != nil {
 		return nil, err
 	}

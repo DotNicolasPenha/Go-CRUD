@@ -51,7 +51,7 @@ func setupTablePost(conn *pgxpool.Pool, ctx context.Context) error {
 	query := `
 	CREATE TABLE IF NOT EXISTS posts (
 	   ID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-		 username TEXT NOT NULL,
+		 author_id UUID NOT NULL REFERENCES users(ID),
 		 body TEXT NOT NULL,
 		 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	)

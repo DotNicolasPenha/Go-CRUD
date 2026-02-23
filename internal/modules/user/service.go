@@ -18,7 +18,6 @@ func NewService(repository *Repository) *Service {
 		repository: *repository,
 	}
 }
-
 func (s *Service) AddUser(createUserDto CreateUserDTO) error {
 	if createUserDto.Username == "" {
 		return errors.New("username is undefined")

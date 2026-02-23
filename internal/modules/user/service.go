@@ -1,8 +1,6 @@
 package user
 
 import (
-	"errors"
-
 	"github.com/DotNicolasPenha/Posts-CRUD/internal/common/logger"
 )
 
@@ -20,10 +18,10 @@ func NewService(repository *Repository) *Service {
 }
 func (s *Service) AddUser(createUserDto CreateUserDTO) error {
 	if createUserDto.Username == "" {
-		return errors.New("username is undefined")
+		return ErrNameUserIsNil
 	}
 	if createUserDto.Bio == "" {
-		return errors.New("bio is undefined")
+		return ErrBioIsNil
 	}
 	return s.repository.Insert(createUserDto)
 }

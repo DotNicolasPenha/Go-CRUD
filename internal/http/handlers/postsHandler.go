@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"errors"
+
+	"github.com/DotNicolasPenha/Posts-CRUD/internal/http/responses"
 	"github.com/DotNicolasPenha/Posts-CRUD/internal/modules/post"
 	"github.com/gin-gonic/gin"
 )
@@ -12,75 +15,44 @@ func PostsHandler(g *gin.Engine, service *post.Service) {
 		postsHandler.POST("/posts", func(ctx *gin.Context) {
 			var postToCreate post.CreatePostDTO
 			if err := ctx.ShouldBindJSON(&postToCreate); err != nil {
-				ctx.JSON(400, gin.H{
-					"error": err.Error(),
-					"ok":    false,
-				})
+				responses.BadRequest(ctx, err)
 				return
 			}
 			if err := service.AddPost(postToCreate); err != nil {
-				ctx.JSON(400, gin.H{
-					"error": err.Error(),
-					"ok":    false,
-				})
+				responses.BadRequest(ctx, err)
 				return
 			}
-			ctx.JSON(201, gin.H{
-				"msg": "post created",
-				"ok":  true,
-			})
+			responses.OK_CREATED(ctx, "post created")
 		})
 		postsHandler.GET("/posts", func(ctx *gin.Context) {
 			posts, err := service.GetPosts()
 			if err != nil {
-				ctx.JSON(500, gin.H{
-					"error": err.Error(),
-					"ok":    false,
-				})
+				responses.BadRequest(ctx, err)
 				return
 			}
-			ctx.JSON(200, gin.H{
-				"posts": posts,
-				"ok":    true,
-			})
+			responses.OK_DATA(ctx, posts)
 		})
 		postsHandler.GET("/posts/:id", func(ctx *gin.Context) {
 			id := ctx.Param("id")
 			post, err := service.GetOnePost(id)
 			if err != nil {
-				ctx.JSON(500, gin.H{
-					"error": err.Error(),
-					"ok":    false,
-				})
+				responses.BadRequest(ctx, err)
 				return
 			}
 			if post == nil {
-				ctx.JSON(404, gin.H{
-					"error": "post not found",
-					"ok":    false,
-				})
+				responses.NotFound(ctx, errors.New("post not found"))
 				return
 			}
-
-			ctx.JSON(200, gin.H{
-				"post": post,
-				"ok":   true,
-			})
+			responses.OK_DATA(ctx, post)
 		})
 		postsHandler.DELETE("/posts/:id", func(ctx *gin.Context) {
 			id := ctx.Param("id")
 			err := service.RemoveOne(id)
 			if err != nil {
-				ctx.JSON(400, gin.H{
-					"error": err.Error(),
-					"ok":    false,
-				})
+				responses.BadRequest(ctx, err)
 				return
 			}
-			ctx.JSON(200, gin.H{
-				"post_deleted": id,
-				"ok":           true,
-			})
+			responses.OK_DELETE(ctx)
 		})
 	}
 }

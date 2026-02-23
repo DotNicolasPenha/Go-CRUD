@@ -2,17 +2,17 @@ package responses
 
 import "github.com/gin-gonic/gin"
 
-func NotFound(ctx *gin.Context, msg string) {
+func NotFound(ctx *gin.Context, err error) {
 	ctx.JSON(404, gin.H{
 		"ok":    false,
-		"error": msg,
+		"error": err.Error(),
 	})
 }
 
-func BadRequest(ctx *gin.Context, msg string) {
+func BadRequest(ctx *gin.Context, err error) {
 	ctx.JSON(400, gin.H{
 		"ok":    false,
-		"error": msg,
+		"error": err.Error(),
 	})
 }
 

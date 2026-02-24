@@ -6,8 +6,10 @@ import (
 	"github.com/DotNicolasPenha/Posts-CRUD/database"
 	"github.com/DotNicolasPenha/Posts-CRUD/internal/common/logger"
 	"github.com/DotNicolasPenha/Posts-CRUD/internal/http"
+
 	"github.com/DotNicolasPenha/Posts-CRUD/internal/modules/post"
 	"github.com/DotNicolasPenha/Posts-CRUD/internal/modules/user"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,13 +26,13 @@ func main() {
 	if err != nil {
 		logger.Fatal(err.Error())
 	}
-	// setup post repository
+	// setup post repository;service
 	repositoryPost := post.NewRepository(conn)
 	servicePost := post.NewService(repositoryPost)
-	// setup user repository
+	// setup user repository;service
 	repositoryUser := user.NewRepository(conn)
 	serviceUser := user.NewService(repositoryUser)
-	// api configurations and route /
+	// api configurations and setup route
 	g := gin.Default()
 	http.SetupRoutes(g, servicePost, serviceUser)
 	g.Run(":3000")

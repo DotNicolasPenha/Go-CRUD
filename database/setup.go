@@ -14,10 +14,10 @@ func SetupTables(conn *pgxpool.Pool) error {
 	if err := setupExtensions(conn, ctx); err != nil {
 		return err
 	}
-	if err := setupTablePost(conn, ctx); err != nil {
+	if err := setupTableUser(conn, ctx); err != nil {
 		return err
 	}
-	if err := setupTableUser(conn, ctx); err != nil {
+	if err := setupTablePost(conn, ctx); err != nil {
 		return err
 	}
 	return nil
@@ -37,6 +37,7 @@ func setupTableUser(conn *pgxpool.Pool, ctx context.Context) error {
 	CREATE TABLE IF NOT EXISTS users (
 	  ID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 		nameuser TEXT NOT NULL UNIQUE,
+		passwordhash TEXT NOT NULL,
 		bio TEXT NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	)

@@ -23,6 +23,10 @@ func (s *Service) AddUser(createUserDto CreateUserDTO) error {
 	if createUserDto.Bio == "" {
 		return ErrBioIsNil
 	}
+	if createUserDto.PasswordHash == "" {
+		return ErrPasswordIsNil
+	}
+
 	return s.repository.Insert(createUserDto)
 }
 

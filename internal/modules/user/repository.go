@@ -26,25 +26,38 @@ func (r *Repository) Insert(createUserDto CreateUserDTO) error {
 	defer cancel()
 
 	_, err := r.conn.Exec(
-		ctx, "INSERT INTO users (nameuser,bio) VALUES ($1,$2)", createUserDto.Username, createUserDto.Bio,
+		ctx, "INSERT INTO users (nameuser,passwordhash,bio) VALUES ($1,$2,$3)",
+		createUserDto.Username, createUserDto.PasswordHash, createUserDto.Bio,
 	)
 	return err
 }
-
 func (r *Repository) FindMany() ([]User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	rows, err := r.conn.Query(ctx, "SELECT * FROM users")
+	rows, err := r.conn.Query(ctx, "SELECT nameuser,bio,created_at FROM users")
 	if err != nil {
 		return nil, err
 	}
 	var Users []User
 	for rows.Next() {
 		var User User
-		if err := rows.Scan(&User.ID, &User.Username, &User.Bio, &User.CreatedAt); err != nil {
+		if err := rows.Scan(&User.Username, &User.Bio, &User.CreatedAt); err != nil {
 			return nil, err
 		}
 		Users = append(Users, User)
 	}
 	return Users, nil
+}
+func (r *Repository) FindByNameUser(nameuser string) (*User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var user User
+	err := r.conn.QueryRow(ctx, "SELECT nameuser,passwordhash FROM users WHERE nameuser=$1", nameuser).Scan(
+		&user.Username, &user.PasswordHash,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

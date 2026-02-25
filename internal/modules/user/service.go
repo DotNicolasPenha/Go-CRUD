@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/DotNicolasPenha/Posts-CRUD/internal/common/logger"
+	"github.com/DotNicolasPenha/Posts-CRUD/pkg/hasher"
 )
 
 type Service struct {
@@ -26,7 +27,11 @@ func (s *Service) AddUser(createUserDto CreateUserDTO) error {
 	if createUserDto.PasswordHash == "" {
 		return ErrPasswordIsNil
 	}
-
+	password, err := hasher.HashPassword(createUserDto.PasswordHash)
+	if err != nil {
+		return err
+	}
+	createUserDto.PasswordHash = password
 	return s.repository.Insert(createUserDto)
 }
 

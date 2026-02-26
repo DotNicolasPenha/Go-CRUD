@@ -16,5 +16,6 @@ func UsersHandler(serviceUser *user.Service, g *gin.Engine) {
 	{
 		userHandler.POST("/", handler.createUserHandler)
 		userHandler.GET("/", handler.getUsersHandler)
+		userHandler.POST("/login", handler.loginHandler)
 	}
 }

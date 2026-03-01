@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/DotNicolasPenha/Posts-CRUD/internal/common/logger"
+	"github.com/DotNicolasPenha/Posts-CRUD/pkg/JWT"
 	"github.com/DotNicolasPenha/Posts-CRUD/pkg/hasher"
 )
 
@@ -37,4 +38,32 @@ func (s *Service) AddUser(createUserDto CreateUserDTO) error {
 
 func (s *Service) GetUsers() ([]User, error) {
 	return s.repository.FindMany()
+}
+
+func (s *Service) LoginUser(userLogin LoginUserDTO) (string, error) {
+	if userLogin.Username == "" {
+		return "", ErrNameUserIsNil
+	}
+	if userLogin.Password == "" {
+		return "", ErrPasswordIsNil
+	}
+
+	user, err := s.repository.FindByNameUser(userLogin.Username)
+	if err != nil {
+		return "", err
+	}
+	if user == nil {
+		return "", ErrNotFound
+	}
+
+	if hasher.ComparePassword(user.PasswordHash, userLogin.Password) {
+		return "", ErrIncorrectPassword
+	}
+
+	token, err := JWT.GenerateToken(user.ID.UUID.String())
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }

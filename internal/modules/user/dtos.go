@@ -5,3 +5,7 @@ type CreateUserDTO struct {
 	PasswordHash string `json:"passwordhash"`
 	Bio          string `json:"bio"`
 }
+type LoginUserDTO struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
